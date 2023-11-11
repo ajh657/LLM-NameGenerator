@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            ToolStripProgressBar toolStripProgressBar1;
+            var dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            var dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            toolStripProgressBar = new ToolStripProgressBar();
             InputGroupBox = new GroupBox();
             button1 = new Button();
             inputTextBox = new TextBox();
@@ -36,21 +38,22 @@
             inputAPIKeyTextBox = new TextBox();
             inputAPIKeylabel = new Label();
             outputGroupBox = new GroupBox();
-            richTextBox1 = new RichTextBox();
+            outputDataGridView = new DataGridView();
+            EntryColumn = new DataGridViewTextBoxColumn();
             statusStrip1 = new StatusStrip();
-            toolStripProgressBar1 = new ToolStripProgressBar();
             InputGroupBox.SuspendLayout();
             outputGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)outputDataGridView).BeginInit();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // toolStripProgressBar1
+            // toolStripProgressBar
             // 
-            toolStripProgressBar1.MarqueeAnimationSpeed = 75;
-            toolStripProgressBar1.Name = "toolStripProgressBar1";
-            toolStripProgressBar1.Size = new Size(100, 16);
-            toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
-            toolStripProgressBar1.Visible = false;
+            toolStripProgressBar.MarqueeAnimationSpeed = 75;
+            toolStripProgressBar.Name = "toolStripProgressBar";
+            toolStripProgressBar.Size = new Size(100, 16);
+            toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+            toolStripProgressBar.Visible = false;
             // 
             // InputGroupBox
             // 
@@ -62,7 +65,7 @@
             InputGroupBox.Controls.Add(inputAPIKeylabel);
             InputGroupBox.Location = new Point(12, 12);
             InputGroupBox.Name = "InputGroupBox";
-            InputGroupBox.Size = new Size(280, 145);
+            InputGroupBox.Size = new Size(305, 145);
             InputGroupBox.TabIndex = 0;
             InputGroupBox.TabStop = false;
             InputGroupBox.Text = "Input";
@@ -76,13 +79,14 @@
             button1.TabIndex = 4;
             button1.Text = "Generate Names";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += inputSubmitButton_Click;
             // 
             // inputTextBox
             // 
             inputTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             inputTextBox.Location = new Point(6, 81);
             inputTextBox.Name = "inputTextBox";
-            inputTextBox.Size = new Size(268, 23);
+            inputTextBox.Size = new Size(293, 23);
             inputTextBox.TabIndex = 3;
             // 
             // inputLabel
@@ -96,10 +100,13 @@
             // 
             // inputAPIKeyTextBox
             // 
+            inputAPIKeyTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             inputAPIKeyTextBox.Location = new Point(6, 37);
             inputAPIKeyTextBox.Name = "inputAPIKeyTextBox";
-            inputAPIKeyTextBox.Size = new Size(268, 23);
+            inputAPIKeyTextBox.PasswordChar = '*';
+            inputAPIKeyTextBox.Size = new Size(293, 23);
             inputAPIKeyTextBox.TabIndex = 1;
+            inputAPIKeyTextBox.UseSystemPasswordChar = true;
             // 
             // inputAPIKeylabel
             // 
@@ -112,28 +119,59 @@
             // 
             // outputGroupBox
             // 
-            outputGroupBox.Controls.Add(richTextBox1);
-            outputGroupBox.Location = new Point(18, 163);
+            outputGroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            outputGroupBox.Controls.Add(outputDataGridView);
+            outputGroupBox.Location = new Point(12, 163);
             outputGroupBox.Name = "outputGroupBox";
-            outputGroupBox.Size = new Size(274, 263);
+            outputGroupBox.Size = new Size(305, 296);
             outputGroupBox.TabIndex = 1;
             outputGroupBox.TabStop = false;
             outputGroupBox.Text = "Output";
             // 
-            // richTextBox1
+            // outputDataGridView
             // 
-            richTextBox1.Location = new Point(6, 22);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(262, 235);
-            richTextBox1.TabIndex = 0;
-            richTextBox1.Text = "";
+            outputDataGridView.AllowUserToAddRows = false;
+            outputDataGridView.AllowUserToDeleteRows = false;
+            outputDataGridView.AllowUserToResizeRows = false;
+            outputDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            outputDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            outputDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            outputDataGridView.Columns.AddRange(new DataGridViewColumn[] { EntryColumn });
+            outputDataGridView.Location = new Point(6, 22);
+            outputDataGridView.Name = "outputDataGridView";
+            outputDataGridView.ReadOnly = true;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = SystemColors.Control;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            outputDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            outputDataGridView.RowTemplate.Height = 25;
+            outputDataGridView.Size = new Size(293, 268);
+            outputDataGridView.TabIndex = 0;
+            // 
+            // EntryColumn
+            // 
+            EntryColumn.HeaderText = "Name";
+            EntryColumn.Name = "EntryColumn";
+            EntryColumn.ReadOnly = true;
+            EntryColumn.Width = 200;
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1 });
-            statusStrip1.Location = new Point(0, 429);
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar });
+            statusStrip1.Location = new Point(0, 462);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(304, 22);
+            statusStrip1.Size = new Size(329, 22);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -141,7 +179,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(304, 451);
+            ClientSize = new Size(329, 484);
             Controls.Add(statusStrip1);
             Controls.Add(outputGroupBox);
             Controls.Add(InputGroupBox);
@@ -150,6 +188,7 @@
             InputGroupBox.ResumeLayout(false);
             InputGroupBox.PerformLayout();
             outputGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)outputDataGridView).EndInit();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             ResumeLayout(false);
@@ -165,7 +204,9 @@
         private Label inputLabel;
         private Button button1;
         private GroupBox outputGroupBox;
-        private RichTextBox richTextBox1;
         private StatusStrip statusStrip1;
+        private ToolStripProgressBar toolStripProgressBar;
+        private DataGridView outputDataGridView;
+        private DataGridViewTextBoxColumn EntryColumn;
     }
 }
