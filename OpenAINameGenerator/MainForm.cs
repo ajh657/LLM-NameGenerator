@@ -76,6 +76,7 @@ namespace OpenAINameGenerator
                         var names = generationResult.GetResponce();
                         var dataTableRows = outputDataGridView.Rows;
 
+                        dataTableRows.Clear();
 
                         foreach (var item in names)
                         {
@@ -108,6 +109,12 @@ namespace OpenAINameGenerator
 
         private bool Authenticate()
         {
+
+            if (_openAIService != null)
+            {
+                return true;
+            }
+
             string currentApiKey;
             if (_opAPIKey != null)
             {
