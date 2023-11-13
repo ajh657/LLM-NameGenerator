@@ -18,20 +18,46 @@ namespace OpenAINameGenerator
     {
         private static OpenAIService? _openAIService;
         private static string? _apiKey;
+        private static string? _opAPIKey;
 
         public MainForm()
         {
             InitializeComponent();
             outputDataGridView.RowHeadersWidth = 75;
+
+            GetOPAPIKey();
+
+        }
+
+        private void GetOPAPIKey()
+        {
+            var opAPIKey = OPIntegration.GetAPIKey();
+
+            if (opAPIKey != null)
+            {
+                _opAPIKey = opAPIKey;
+                inputAPIKeyTextBox.Text = "Key Loaded From 1Password";
+                inputAPIKeyTextBox.UseSystemPasswordChar = false;
+                inputAPIKeyTextBox.PasswordChar = '\0';
+                inputAPIKeyTextBox.Enabled = false;
+            }
         }
 
         private async void inputSubmitButton_Click(object sender, EventArgs e)
         {
             var Authenticated = Authenticate();
 
+            toolStripProgressBar.Visible = true;
+
+            await GenerateNames(Authenticated);
+
+            toolStripProgressBar.Visible = false;
+        }
+
+        private async Task GenerateNames(bool Authenticated)
+        {
             if (Authenticated)
             {
-                toolStripProgressBar.Visible = true;
                 var generationResult = await _openAIService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest()
                 {
                     Messages = new List<ChatMessage>()
@@ -78,13 +104,19 @@ namespace OpenAINameGenerator
                     ShowError("Generation failed!", "Unknown error");
                 }
             }
-
-            toolStripProgressBar.Visible = false;
         }
 
         private bool Authenticate()
         {
-            var currentApiKey = inputAPIKeyTextBox.Text;
+            string currentApiKey;
+            if (_opAPIKey != null)
+            {
+                currentApiKey = _opAPIKey;
+            }
+            else
+            {
+                currentApiKey = inputAPIKeyTextBox.Text;
+            }
 
             if (_openAIService == null || currentApiKey != _apiKey)
             {
