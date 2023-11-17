@@ -9,7 +9,6 @@ namespace OpenAINameGenerator
 {
     internal static class Constants
     {
-        internal const string SystemPrompt = "You provide list of names for the user inputs.";
-        internal static readonly Regex IndexRegex = new Regex(@"^(\d)+\. ", RegexOptions.Compiled);
+        internal const string SystemPrompt = "You provide list of names for the user inputs. Generated names must be in a Json formatted string array with no newlines.";
     }
 }
