@@ -1,157 +1,138 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OpenAI.Managers;
-using OpenAI.ObjectModels.RequestModels;
-using OpenAI;
-using OpenAI.ObjectModels;
+using OpenAINameGenerator.OpenAI;
+using OpenAINameGenerator.Util;
 
 namespace OpenAINameGenerator
 {
     public partial class MainForm : Form
     {
-        private static OpenAIService? _openAIService;
-        private static string? _apiKey;
-        private static string? _opAPIKey;
+        private readonly IOpenAIClient _openAIClient;
 
-        public MainForm()
+        public MainForm(IOpenAIClient openAIClient)
         {
             InitializeComponent();
+            _openAIClient = openAIClient;
             outputDataGridView.RowHeadersWidth = 75;
 
-            GetOPAPIKey();
-
-        }
-
-        private void GetOPAPIKey()
-        {
-            var opAPIKey = OPIntegration.GetAPIKey();
-
-            if (opAPIKey != null)
+            if (_openAIClient.IsKeyLoadedExternaly())
             {
-                _opAPIKey = opAPIKey;
-                inputAPIKeyTextBox.Text = "Key Loaded From 1Password";
-                inputAPIKeyTextBox.UseSystemPasswordChar = false;
-                inputAPIKeyTextBox.PasswordChar = '\0';
-                inputAPIKeyTextBox.Enabled = false;
+                SetExternalKeyNotice();
             }
         }
 
+        #region OpenAI
+
         private async void inputSubmitButton_Click(object sender, EventArgs e)
         {
-            var Authenticated = Authenticate();
+            await Generate();
+        }
 
+        private async void inputTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                ActiveControl = null;
+                await Generate();
+            }
+        }
+
+        private void SetExternalKeyNotice()
+        {
+            inputAPIKeyTextBox.Text = Constants.KeyloadedMessage;
+            inputAPIKeyTextBox.UseSystemPasswordChar = false;
+            inputAPIKeyTextBox.PasswordChar = '\0';
+            inputAPIKeyTextBox.Enabled = false;
+        }
+
+        private async Task Generate()
+        {
             toolStripProgressBar.Visible = true;
 
-            await GenerateNames(Authenticated);
+            if (!_openAIClient.IsKeyLoadedExternaly() && !_openAIClient.IsAuthenticated())
+            {
+                _openAIClient.Authenticate(inputAPIKeyTextBox.Text);
+            }
+
+            if (_openAIClient.IsAuthenticated())
+            {
+                var result = await _openAIClient.GenerateNames(inputTextBox.Text);
+
+                if (result != null)
+                {
+
+                    var rows = outputDataGridView.Rows;
+
+                    rows.Clear();
+
+                    foreach (var item in result)
+                    {
+                        var row = new DataGridViewRow();
+                        row.CreateCells(outputDataGridView);
+                        row.HeaderCell.Value = (rows.Count + 1).ToString();
+                        row.Cells[0].Value = item;
+
+                        rows.Add(row);
+                    }
+                }
+            }
+            else
+            {
+                toolStripProgressBar.Visible = false;
+                Extensions.ShowError(Constants.AuthenticationFailTitle, Constants.AuthenticationFailBody);
+            }
 
             toolStripProgressBar.Visible = false;
         }
 
-        private async Task GenerateNames(bool Authenticated)
+        #endregion
+
+        #region Favorites
+
+        private void savedItemsClearButton_Click(object sender, EventArgs e)
         {
-            if (Authenticated)
+            if (Extensions.ConformationDialogueBox(Constants.FavoritesClearBody) == DialogResult.OK)
             {
-                var generationResult = await _openAIService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest()
-                {
-                    Messages = new List<ChatMessage>()
-                    {
-                        ChatMessage.FromSystem(Constants.SystemPrompt),
-                        ChatMessage.FromUser(inputTextBox.Text)
-                    },
-                    Model = Models.Gpt_4,
-                    MaxTokens = 256
-                });
-
-                if (generationResult != null)
-                {
-                    if (generationResult.Successful)
-                    {
-                        var names = generationResult.GetResponce();
-                        var dataTableRows = outputDataGridView.Rows;
-
-                        dataTableRows.Clear();
-
-                        foreach (var item in names)
-                        {
-                            var row = new DataGridViewRow();
-                            row.CreateCells(outputDataGridView);
-                            row.HeaderCell.Value = (dataTableRows.Count + 1).ToString();
-                            row.Cells[0].Value = item;
-
-                            outputDataGridView.Rows.Add(row);
-                        }
-                    }
-                    else
-                    {
-                        if (generationResult.Error != null)
-                        {
-                            ShowError("Generation failed!", generationResult.Error.ToString());
-                        }
-                        else
-                        {
-                            ShowError("Generation failed!", "Unknown error");
-                        }
-                    }
-                }
-                else
-                {
-                    ShowError("Generation failed!", "Unknown error");
-                }
+                favoritesDataGridView.Rows.Clear();
             }
         }
 
-        private bool Authenticate()
+        private void savedItemsSaveButton_Click(object sender, EventArgs e)
         {
+            string? selectedName = null;
 
-            if (_openAIService != null)
+            if (outputDataGridView.SelectedRows.Count == 1)
             {
-                return true;
+                selectedName = outputDataGridView.SelectedRows[0].Cells[0].Value.ToString();
             }
 
-            string currentApiKey;
-            if (_opAPIKey != null)
+            if (outputDataGridView.SelectedCells.Count == 1)
             {
-                currentApiKey = _opAPIKey;
-            }
-            else
-            {
-                currentApiKey = inputAPIKeyTextBox.Text;
-            }
-
-            if (_openAIService == null || currentApiKey != _apiKey)
-            {
-                if (!string.IsNullOrEmpty(currentApiKey))
+                if (outputDataGridView.SelectedCells[0].ColumnIndex == 0)
                 {
-                    _openAIService = new OpenAIService(new OpenAiOptions()
-                    {
-                        ApiKey = currentApiKey
-                    });
-                    _apiKey = currentApiKey;
-                    return true;
+                    selectedName = outputDataGridView.SelectedCells[0].Value.ToString();
                 }
             }
 
-            ShowError("API Key authentication failed!", "Please chek the api key");
-            return false;
+            if (selectedName != null)
+            {
+                var rows = favoritesDataGridView.Rows;
+
+                var row = new DataGridViewRow();
+                row.CreateCells(outputDataGridView);
+                row.HeaderCell.Value = (rows.Count + 1).ToString();
+                row.Cells[0].Value = selectedName;
+
+                rows.Add(row);
+            }
         }
 
-        private static void ShowError(string title, string? body)
+        #endregion
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (body != null)
-            {
-                MessageBox.Show(body, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                MessageBox.Show("Error", title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            _openAIClient.Dispose();
         }
     }
 }

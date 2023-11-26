@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OpenAI.ObjectModels.ResponseModels;
 
-namespace OpenAINameGenerator
+namespace OpenAINameGenerator.OpenAI
 {
     public static class OpenAIExtensions
     {

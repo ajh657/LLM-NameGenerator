@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using OpenAINameGenerator.Util;
 
-namespace OpenAINameGenerator
+namespace OpenAINameGenerator.OPassowrd
 {
-    internal static class OPIntegration
+    public partial class OPIntegration : IOPIntegration
     {
-        internal static string? GetAPIKey()
+        public string? GetAPIKey()
         {
             string? apiKey = null;
 
@@ -38,12 +39,9 @@ namespace OpenAINameGenerator
                 return null;
             }
 
-            while (!process.StandardOutput.EndOfStream)
-            {
-                apiKey = process.StandardOutput.ReadLine();
-            }
+            apiKey = process.StandardOutput.ReadLine();
 
-            if(apiKey == null)
+            if (apiKey == null)
             {
                 return null;
             }
@@ -58,7 +56,7 @@ namespace OpenAINameGenerator
 
         private static bool IsValidApiKeyFormat(string secretKey)
         {
-            return Regex.IsMatch(secretKey, @"^sk-[a-zA-Z0-9]{32,}$");
+            return Constants.OpenAIKeyRegex().IsMatch(secretKey);
         }
     }
 }
