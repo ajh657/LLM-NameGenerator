@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OpenAI.ObjectModels.ResponseModels;
 
@@ -14,13 +10,13 @@ namespace OpenAINameGenerator.OpenAI
         {
             if (reponce == null)
             {
-                return Array.Empty<string>();
+                return [];
             }
 
             var responceString = reponce.Choices.First().Message.Content;
 
             var array = JsonConvert.DeserializeObject<string[]>(responceString);
-            array ??= Array.Empty<string>();
+            array ??= [];
 
             return array;
         }

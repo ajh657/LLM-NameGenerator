@@ -37,6 +37,8 @@ namespace OpenAINameGenerator
             var dataGridViewCellStyle4 = new DataGridViewCellStyle();
             toolStripProgressBar = new ToolStripProgressBar();
             InputGroupBox = new GroupBox();
+            InputModelLabel = new Label();
+            InputModelComboBox = new ComboBox();
             inputSubmitButton = new Button();
             inputTextBox = new TextBox();
             inputLabel = new Label();
@@ -72,6 +74,8 @@ namespace OpenAINameGenerator
             // InputGroupBox
             // 
             InputGroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            InputGroupBox.Controls.Add(InputModelLabel);
+            InputGroupBox.Controls.Add(InputModelComboBox);
             InputGroupBox.Controls.Add(inputSubmitButton);
             InputGroupBox.Controls.Add(inputTextBox);
             InputGroupBox.Controls.Add(inputLabel);
@@ -79,15 +83,35 @@ namespace OpenAINameGenerator
             InputGroupBox.Controls.Add(inputAPIKeylabel);
             InputGroupBox.Location = new Point(12, 12);
             InputGroupBox.Name = "InputGroupBox";
-            InputGroupBox.Size = new Size(645, 145);
+            InputGroupBox.Size = new Size(645, 213);
             InputGroupBox.TabIndex = 0;
             InputGroupBox.TabStop = false;
             InputGroupBox.Text = "Input";
             // 
+            // InputModelLabel
+            // 
+            InputModelLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            InputModelLabel.AutoSize = true;
+            InputModelLabel.Location = new Point(6, 137);
+            InputModelLabel.Name = "InputModelLabel";
+            InputModelLabel.Size = new Size(49, 15);
+            InputModelLabel.TabIndex = 6;
+            InputModelLabel.Text = "Models:";
+            // 
+            // InputModelComboBox
+            // 
+            InputModelComboBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            InputModelComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            InputModelComboBox.FormattingEnabled = true;
+            InputModelComboBox.Location = new Point(6, 155);
+            InputModelComboBox.Name = "InputModelComboBox";
+            InputModelComboBox.Size = new Size(120, 23);
+            InputModelComboBox.TabIndex = 5;
+            // 
             // inputSubmitButton
             // 
             inputSubmitButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            inputSubmitButton.Location = new Point(6, 116);
+            inputSubmitButton.Location = new Point(6, 184);
             inputSubmitButton.Name = "inputSubmitButton";
             inputSubmitButton.Size = new Size(120, 23);
             inputSubmitButton.TabIndex = 4;
@@ -137,9 +161,9 @@ namespace OpenAINameGenerator
             outputGroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             outputGroupBox.Controls.Add(savedItemsGroupBox);
             outputGroupBox.Controls.Add(outputDataGridView);
-            outputGroupBox.Location = new Point(12, 163);
+            outputGroupBox.Location = new Point(12, 231);
             outputGroupBox.Name = "outputGroupBox";
-            outputGroupBox.Size = new Size(645, 296);
+            outputGroupBox.Size = new Size(645, 294);
             outputGroupBox.TabIndex = 1;
             outputGroupBox.TabStop = false;
             outputGroupBox.Text = "Output";
@@ -151,7 +175,7 @@ namespace OpenAINameGenerator
             savedItemsGroupBox.Controls.Add(favoritesDataGridView);
             savedItemsGroupBox.Location = new Point(305, 22);
             savedItemsGroupBox.Name = "savedItemsGroupBox";
-            savedItemsGroupBox.Size = new Size(334, 268);
+            savedItemsGroupBox.Size = new Size(334, 266);
             savedItemsGroupBox.TabIndex = 1;
             savedItemsGroupBox.TabStop = false;
             savedItemsGroupBox.Text = "Saved generations";
@@ -161,7 +185,7 @@ namespace OpenAINameGenerator
             savedItemsButtonsGroupBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             savedItemsButtonsGroupBox.Controls.Add(savedItemsClearButton);
             savedItemsButtonsGroupBox.Controls.Add(savedItemsSaveButton);
-            savedItemsButtonsGroupBox.Location = new Point(6, 215);
+            savedItemsButtonsGroupBox.Location = new Point(6, 213);
             savedItemsButtonsGroupBox.Name = "savedItemsButtonsGroupBox";
             savedItemsButtonsGroupBox.Size = new Size(322, 47);
             savedItemsButtonsGroupBox.TabIndex = 2;
@@ -197,7 +221,7 @@ namespace OpenAINameGenerator
             favoritesDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
@@ -210,14 +234,13 @@ namespace OpenAINameGenerator
             favoritesDataGridView.ReadOnly = true;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = SystemColors.Control;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
             dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             favoritesDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            favoritesDataGridView.RowTemplate.Height = 25;
-            favoritesDataGridView.Size = new Size(322, 187);
+            favoritesDataGridView.Size = new Size(322, 185);
             favoritesDataGridView.TabIndex = 1;
             // 
             // dataGridViewTextBoxColumn1
@@ -235,7 +258,7 @@ namespace OpenAINameGenerator
             outputDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
             dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
@@ -248,14 +271,13 @@ namespace OpenAINameGenerator
             outputDataGridView.ReadOnly = true;
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
             dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
             outputDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            outputDataGridView.RowTemplate.Height = 25;
-            outputDataGridView.Size = new Size(293, 268);
+            outputDataGridView.Size = new Size(293, 266);
             outputDataGridView.TabIndex = 0;
             // 
             // EntryColumn
@@ -268,7 +290,7 @@ namespace OpenAINameGenerator
             // statusStrip1
             // 
             statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar });
-            statusStrip1.Location = new Point(0, 462);
+            statusStrip1.Location = new Point(0, 528);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(669, 22);
             statusStrip1.TabIndex = 2;
@@ -278,7 +300,7 @@ namespace OpenAINameGenerator
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(669, 484);
+            ClientSize = new Size(669, 550);
             Controls.Add(statusStrip1);
             Controls.Add(outputGroupBox);
             Controls.Add(InputGroupBox);
@@ -317,5 +339,7 @@ namespace OpenAINameGenerator
         private Button savedItemsSaveButton;
         private DataGridView favoritesDataGridView;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private ComboBox InputModelComboBox;
+        private Label InputModelLabel;
     }
 }

@@ -15,6 +15,7 @@ namespace OpenAINameGenerator
             InitializeComponent();
             _openAIClient = openAIClient;
             outputDataGridView.RowHeadersWidth = 75;
+            InputModelComboBox.Items.AddRange(Util.Util.GetGPTModels());
 
             if (_openAIClient.IsKeyLoadedExternaly())
             {
@@ -126,7 +127,7 @@ namespace OpenAINameGenerator
 
                 rows.Add(row);
             }
-        } 
+        }
 
         #endregion
 
