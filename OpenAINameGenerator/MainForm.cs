@@ -126,7 +126,7 @@ namespace OpenAINameGenerator
 
                 rows.Add(row);
             }
-        }
+        } 
 
         #endregion
 
