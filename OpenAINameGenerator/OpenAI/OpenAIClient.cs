@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using OpenAI;
 using OpenAI.Managers;
-using OpenAI.ObjectModels.RequestModels;
 using OpenAI.ObjectModels;
-using OpenAINameGenerator.Util;
+using OpenAI.ObjectModels.RequestModels;
 using OpenAINameGenerator.OPassowrd;
+using OpenAINameGenerator.Util;
 
 namespace OpenAINameGenerator.OpenAI
 {
@@ -18,7 +15,8 @@ namespace OpenAINameGenerator.OpenAI
         private OpenAIService? _openAIService;
         private string? _apiKey;
         private bool _authenticated = false;
-        private bool _keyLoadedExternaly = false;
+        private string _selectedModel;
+        private readonly bool _keyLoadedExternaly = false;
 
         public OpenAIClient(IOPIntegration OPIntegration)
         {
@@ -29,6 +27,8 @@ namespace OpenAINameGenerator.OpenAI
                 Authenticate(opAPIKey);
                 _keyLoadedExternaly = true;
             }
+
+            _selectedModel = Models.Gpt_4;
         }
 
         public async Task<IEnumerable<string>> GenerateNames(string input)
@@ -37,12 +37,12 @@ namespace OpenAINameGenerator.OpenAI
             {
                 var generationResult = await _openAIService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest()
                 {
-                    Messages = new List<ChatMessage>()
-                    {
+                    Messages =
+                    [
                         ChatMessage.FromSystem(Constants.SystemPrompt),
                         ChatMessage.FromUser(input)
-                    },
-                    Model = Models.Gpt_4,
+                    ],
+                    Model = _selectedModel,
                     MaxTokens = 256
                 });
 
@@ -90,6 +90,11 @@ namespace OpenAINameGenerator.OpenAI
         public bool IsKeyLoadedExternaly()
         {
             return _keyLoadedExternaly;
+        }
+
+        public void UpdateSelectedModel(int index)
+        {
+            _selectedModel = Constants.AvailableModels[index];
         }
 
         public void Dispose()

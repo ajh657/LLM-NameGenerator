@@ -10,5 +10,6 @@ namespace OpenAINameGenerator.OpenAI
         Task<IEnumerable<string>> GenerateNames(string input);
         bool IsAuthenticated();
         bool IsKeyLoadedExternaly();
+        void UpdateSelectedModel(int index);
     }
 }

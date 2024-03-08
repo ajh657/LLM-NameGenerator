@@ -15,7 +15,8 @@ namespace OpenAINameGenerator
             InitializeComponent();
             _openAIClient = openAIClient;
             outputDataGridView.RowHeadersWidth = 75;
-            InputModelComboBox.Items.AddRange(Util.Util.GetGPTModels());
+            InputModelComboBox.Items.AddRange(Constants.AvailableModels.GetFriendlyModelNames());
+            InputModelComboBox.SelectedIndex = 0;
 
             if (_openAIClient.IsKeyLoadedExternaly())
             {
@@ -134,6 +135,11 @@ namespace OpenAINameGenerator
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             _openAIClient.Dispose();
+        }
+
+        private void InputModelComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _openAIClient.UpdateSelectedModel(InputModelComboBox.SelectedIndex);
         }
     }
 }

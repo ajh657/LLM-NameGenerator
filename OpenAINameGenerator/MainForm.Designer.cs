@@ -107,6 +107,7 @@ namespace OpenAINameGenerator
             InputModelComboBox.Name = "InputModelComboBox";
             InputModelComboBox.Size = new Size(120, 23);
             InputModelComboBox.TabIndex = 5;
+            InputModelComboBox.SelectedIndexChanged += InputModelComboBox_SelectedIndexChanged;
             // 
             // inputSubmitButton
             // 

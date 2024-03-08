@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OpenAINameGenerator.Util
@@ -27,6 +24,22 @@ namespace OpenAINameGenerator.Util
         public static DialogResult ConformationDialogueBox(string body)
         {
             return MessageBox.Show(body, "Are you sure?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+        }
+
+        public static string FirstCharToUpper(this string input) =>
+        input switch
+        {
+            null => throw new ArgumentNullException(nameof(input)),
+            "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
+            _ => string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
+        };
+
+        public static string[] GetFriendlyModelNames(this string[] modelList)
+        {
+            return modelList.Select(x => Constants.UnderscoreBetweenNumbers().Replace(x, "."))
+                            .Select(x => x.Replace('-', ' '))
+                            .Select(x => x.FirstCharToUpper())
+                            .ToArray();
         }
 
     }
